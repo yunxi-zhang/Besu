@@ -1,2 +1,2 @@
 #!/bin/bash
-besu --network=dev
+besu --config-file=./config.toml
