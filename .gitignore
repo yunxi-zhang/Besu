@@ -176,5 +176,5 @@ dist
 
 # Besu
 networkFiles
-
+Node-*
 # End of https://www.toptal.com/developers/gitignore/api/macos
