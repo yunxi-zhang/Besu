@@ -177,6 +177,7 @@ dist
 # Besu
 networkFiles
 Node-*
+key*
 
 # Solidity
 artifacts
