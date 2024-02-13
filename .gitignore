@@ -177,4 +177,8 @@ dist
 # Besu
 networkFiles
 Node-*
+
+# Solidity
+artifacts
+
 # End of https://www.toptal.com/developers/gitignore/api/macos
