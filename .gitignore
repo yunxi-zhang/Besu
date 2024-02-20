@@ -179,6 +179,7 @@ dist
 networkFiles
 Node-*
 key*
+*key
 
 # Solidity
 artifacts
