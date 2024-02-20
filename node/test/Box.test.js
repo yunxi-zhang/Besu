@@ -4,58 +4,12 @@ const { expect } = require("chai");
 const hre = require("hardhat");
 const { Contract, Wallet } = require("ethers");
 const path = require("path");
-const fs = require('fs').promises;
+const fs = require("fs").promises;
+const url = "http://127.0.0.1:8545";
 
 // Start test block
 describe("Box", function () {
-  var url = "http://127.0.0.1:8545";
   const abi = [
-    {
-      inputs: [],
-      stateMutability: "nonpayable",
-      type: "constructor",
-    },
-    {
-      inputs: [
-        {
-          internalType: "address",
-          name: "owner",
-          type: "address",
-        },
-      ],
-      name: "OwnableInvalidOwner",
-      type: "error",
-    },
-    {
-      inputs: [
-        {
-          internalType: "address",
-          name: "account",
-          type: "address",
-        },
-      ],
-      name: "OwnableUnauthorizedAccount",
-      type: "error",
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          internalType: "address",
-          name: "previousOwner",
-          type: "address",
-        },
-        {
-          indexed: true,
-          internalType: "address",
-          name: "newOwner",
-          type: "address",
-        },
-      ],
-      name: "OwnershipTransferred",
-      type: "event",
-    },
     {
       anonymous: false,
       inputs: [
@@ -71,20 +25,7 @@ describe("Box", function () {
     },
     {
       inputs: [],
-      name: "owner",
-      outputs: [
-        {
-          internalType: "address",
-          name: "",
-          type: "address",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "renounceOwnership",
+      name: "initialize",
       outputs: [],
       stateMutability: "nonpayable",
       type: "function",
@@ -116,37 +57,29 @@ describe("Box", function () {
       type: "function",
     },
     {
-      inputs: [
+      inputs: [],
+      name: "x",
+      outputs: [
         {
-          internalType: "address",
-          name: "newOwner",
-          type: "address",
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
         },
       ],
-      name: "transferOwnership",
-      outputs: [],
-      stateMutability: "nonpayable",
+      stateMutability: "view",
       type: "function",
     },
   ];
-  const address = "0xBBb828336c7e0c0D5b43c61e1568f4B10C9B0eD8";
-  before(async function () {
-    this.Box = await hre.ethers.deployContract("Box");
-  });
-
-  beforeEach(async function () {
-    this.box = await this.Box.waitForDeployment();
-  });
+  const address = "0x02E5e3d63523982AD71B7866aDD7272FF6897eBB";
 
   // Test case
-  it("retrieve returns a value previously stored", async function () {
+  it("retrieve a value less than 42 returns a value previously stored", async function () {
     var provider = new ethers.JsonRpcProvider(url);
     const box = new Contract(address, abi, provider);
-    const data = await fs.readFile(path.join(__dirname, "/key"))
+    const data = await fs.readFile(path.join(__dirname, "/keys/adminKey"));
     const signer = new Wallet(data.toString(), provider);
     const contractSigner = box.connect(signer);
-    const tx = await contractSigner.store(42);
-    hash = tx.hash;
-    expect((await box.retrieve()).toString()).to.equal("42");
+    await contractSigner.store(43);
+    expect((await box.retrieve()).toString()).to.equal("43");
   });
 });
