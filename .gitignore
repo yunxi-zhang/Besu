@@ -36,6 +36,7 @@ Temporary Items
 
 ### Node ###
 # Logs
+deployContractLog.json
 logs
 *.log
 npm-debug.log*
