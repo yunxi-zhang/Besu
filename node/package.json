@@ -14,11 +14,13 @@
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@openzeppelin/hardhat-upgrades": "^3.0.3",
     "chai": "^4.4.1",
-    "ethers": "^6.10.0",
-    "hardhat": "^2.19.5"
+    "ethers": "^6.11.1",
+    "hardhat": "^2.20.1"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.1",
+    "@openzeppelin/contracts-upgradeable": "^5.0.1",
+    "ethereum-checksum-address": "^0.0.8",
     "hardhat-ethernal": "^3.2.5"
   }
 }
