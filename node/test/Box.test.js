@@ -9,7 +9,6 @@ describe("Box", function () {
   let addr1;
   let addr2;
 
-
   before(async function () {
     [owner, addr1, addr2] = await ethers.getSigners();
     console.log("owner:", owner.address);
@@ -18,7 +17,7 @@ describe("Box", function () {
 
     Box = await ethers.getContractFactory("Box");
     ownerBox = await upgrades.deployProxy(Box, [owner.address], {
-      initializer: "initialize", 
+      initializer: "initialize",
     });
     await ownerBox.waitForDeployment();
     console.log("Contract deployed to address:", ownerBox.target);
@@ -31,7 +30,6 @@ describe("Box", function () {
 
     expect(tx).to.emit(ownerBox, newValue).withArgs(owner.address, newValue);
     const value = await ownerBox.retrieve();
-    console.log('value:', value);
     expect(value).to.equal(newValue);
   });
 
@@ -41,14 +39,10 @@ describe("Box", function () {
     await tx.wait();
     expect(tx).to.emit(ownerBox, newValue).withArgs(owner.address, newValue);
     const value = await ownerBox.connect(owner).retrieve();
-    console.log('value:', value);
-    await ownerBox.connect(addr1).retrieve();
-    // expect(tx).to.emit(ownerBox, newValue).withArgs(owner.address, newValue);
-    // try {
-     
-    // } catch (error) {
-    //   console.log('error:', error);
-    //   expect(error).to.include();
-    // }
+    try {
+      await ownerBox.connect(addr1).retrieve();
+    } catch (error) {
+      expect(error.message).to.equal("Execution reverted");
+    }
   });
 });
