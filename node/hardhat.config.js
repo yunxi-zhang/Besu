@@ -1,6 +1,9 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-ethers");
 require('@openzeppelin/hardhat-upgrades');
+const ADMIN_ACCOUNT = vars.get("ADMIN_ACCOUNT");
+const USER1_ACCOUNT = vars.get("USER1_ACCOUNT");
+const USER2_ACCOUNT = vars.get("USER2_ACCOUNT");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -8,7 +11,9 @@ module.exports = {
     besu: {
       url: "http://127.0.0.1:8545",
       accounts: [
-        "0x0b4df1d9ac625e8a9cc2b4b8259e3849608ac34e3a02e83d7413a3c1755a6c3f",
+        `${ADMIN_ACCOUNT}`,
+        `${USER1_ACCOUNT}`,
+        `${USER2_ACCOUNT}`,
       ],
     },
   },
@@ -16,4 +21,7 @@ module.exports = {
   sourcify: {
     enabled: true,
   },
+  mocha: {
+    timeout: 100000000,
+  }
 };
