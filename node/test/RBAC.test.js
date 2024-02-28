@@ -29,6 +29,15 @@ describe("RBAC", function () {
     expect(value).to.equal(newValue);
   });
 
+  it("should disallow a default admin to store value by using the admin store function", async function () {
+    const newValue = 10;
+    try {
+      await adminRBAC.adminStore(newValue);
+    } catch (error) {
+      expect(error.message).to.equal("Execution reverted");
+    }
+  });
+
   it("should allow user1 to get a value by using the user retrieve function", async function () {
     const newValue = 20;
     const tx = await adminRBAC.store(newValue);
@@ -42,7 +51,7 @@ describe("RBAC", function () {
   it("should disallow user1 to store a value", async function () {
     const newValue = 30;
     try {
-      const tx = await adminRBAC.connect(addr1).store(newValue);
+      await adminRBAC.connect(addr1).store(newValue);
     } catch (error) {
       expect(error.message).to.equal("Execution reverted");
     }
@@ -55,7 +64,7 @@ describe("RBAC", function () {
     const userGotPermission = await adminRBAC.grantUserRole(addr1.address);
     await userGotPermission.wait();
     try {
-      const value = await adminRBAC.connect(addr1).retrieve();
+      await adminRBAC.connect(addr1).retrieve();
     } catch (error) {
       expect(error.message).to.equal("Execution reverted");
     }

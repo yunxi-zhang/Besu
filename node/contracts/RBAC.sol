@@ -9,25 +9,31 @@ contract RBAC is AccessControlUpgradeable {
     uint256 private _value;
 
     error CallerNotAdmin(address caller);
+    error CallerNotUser(address caller);
 
     event ValueChanged(address indexed setter, uint256 newValue);
 
     function initialize(address admin) public initializer {
         __AccessControl_init();
-        _grantRole(ADMIN_ROLE, admin);
+        _grantRole(DEFAULT_ADMIN_ROLE, admin);
     }
 
     function grantUserRole(address user) public returns (bool) {
         return _grantRole(USER_ROLE, user);
     }
 
-    function store(uint256 value) public onlyRole(ADMIN_ROLE) {
+    function store(uint256 value) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        _value = value;
+        emit ValueChanged(msg.sender, value);
+    }
+
+    function adminStore(uint256 value) public onlyRole(ADMIN_ROLE) {
         _value = value;
         emit ValueChanged(msg.sender, value);
     }
 
     function retrieve() external view returns (uint256) {
-        if (!hasRole(ADMIN_ROLE, msg.sender)) {
+        if (!hasRole(DEFAULT_ADMIN_ROLE, msg.sender)) {
             revert CallerNotAdmin(msg.sender);
         }
         return _value;
@@ -35,7 +41,7 @@ contract RBAC is AccessControlUpgradeable {
 
     function userRetrieve() external view returns (uint256) {
         if (!hasRole(USER_ROLE, msg.sender)) {
-            revert CallerNotAdmin(msg.sender);
+            revert CallerNotUser(msg.sender);
         }
         return _value;
     }
