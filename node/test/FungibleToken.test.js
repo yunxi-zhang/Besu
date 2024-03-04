@@ -13,6 +13,8 @@ describe("FungibleToken", function () {
 
   before(async () => {
     [owner, addr1] = await ethers.getSigners();
+    console.log("owner:", owner.address);
+    console.log("addr1:", addr1.address);
     Contract = await ethers.getContractFactory("FungibleToken");
     contractInstance = await upgrades.deployProxy(
       Contract,
