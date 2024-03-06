@@ -1,7 +1,6 @@
 const { ethers, upgrades } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
-const { time } = require("console");
 
 async function main() {
   const [deployer] = await ethers.getSigners();
