@@ -3,30 +3,43 @@ const fs = require("fs");
 const path = require("path");
 
 async function main() {
+  const contractNames = ["Box", "RBAC"];
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with the account:", deployer.address);
-  const Box = await ethers.getContractFactory("Box");
-  console.log("Deploying Box...");
-  const box = await upgrades.deployProxy(Box, [deployer.address], {
-    initializer: "initialize",
+  const promises = contractNames.map(async (contratName) => {
+    const contract = await ethers.getContractFactory(contratName);
+    const contractInstance = await upgrades.deployProxy(
+      contract,
+      [deployer.address],
+      {
+        initializer: "initialize",
+      }
+    );
+    await contractInstance.waitForDeployment();
+    console.log(
+      "contract",
+      contratName,
+      "deployed to:",
+      contractInstance.target
+    );
+
+    const timeStamp = await Date.now();
+    const date = await new Date(timeStamp);
+    console.log("timeStamp:", timeStamp);
+    console.log("date:", date);
+    const contractLog = {
+      contract: contratName,
+      address: contractInstance.target,
+      timeStamp: timeStamp,
+      humanReadableTimeStamp: date,
+    };
+    return contractLog;
   });
-  await box.waitForDeployment();
-  console.log("Box deployed to:", box.target);
+
+  const contractLogs = await Promise.all(promises);
   const logDir = path.join(__dirname, "../contractLogs/");
   const writer = fs.createWriteStream(logDir + "/deployContractLog.json");
-  const timeStamp = await Date.now();
-  const date = await new Date(timeStamp);
-  console.log("timeStamp:", timeStamp);
-  console.log("date:", date);
-  await writer.write(
-    '{"contract":"Box", "address":"' +
-      box.target +
-      '", "timeStamp":"' +
-      timeStamp +
-      '", "humanReadableTimeStamp":"' +
-      date +
-      '"}'
-  );
+  await writer.write(JSON.stringify(contractLogs));
 }
 
 main();
