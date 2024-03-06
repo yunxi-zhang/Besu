@@ -1,12 +1,24 @@
 // scripts/upgrade_box.js
 const { ethers, upgrades } = require("hardhat");
+const fs = require("fs");
+const path = require("path");
 
 async function main() {
-  const Box = await ethers.getContractFactory('Box');
-  console.log("Upgrading Box...");
-  const address = "0xE392C8245e278fe9D1d4d10A0e80fc743fe74393";
-  await upgrades.upgradeProxy(address, Box);
-  console.log("Box upgraded");
+  const logDir = path.join(__dirname, "../contractLogs/");
+  const contracts = JSON.parse(
+    fs.readFileSync(logDir + "/deployContractLog.json", "utf-8")
+  );
+  console.log("contract:", contracts.contract);
+  const contract = await ethers.getContractFactory(contracts.contract);
+  console.log(
+    "Upgrading contract",
+    contracts.contract,
+    "at address:",
+    contracts.address,
+    "..."
+  );
+  await upgrades.upgradeProxy(contracts.address, contract);
+  console.log("Contract", contracts.contract, "upgraded");
 }
 
 main();
