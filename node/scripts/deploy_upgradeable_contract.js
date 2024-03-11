@@ -23,8 +23,8 @@ async function main() {
       contractInstance.target
     );
 
-    const timeStamp = await Date.now();
-    const date = await new Date(timeStamp);
+    const timeStamp = Date.now();
+    const date = new Date(timeStamp);
     console.log("timeStamp:", timeStamp);
     console.log("date:", date);
     const contractLog = {
