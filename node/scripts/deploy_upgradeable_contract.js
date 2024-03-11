@@ -27,19 +27,19 @@ async function main() {
     const date = new Date(timeStamp);
     console.log("timeStamp:", timeStamp);
     console.log("date:", date);
-    const contractLog = {
+    const contractDeploymentLogs = {
       contract: contratName,
       address: contractInstance.target,
       timeStamp: timeStamp,
       humanReadableTimeStamp: date,
     };
-    return contractLog;
+    return contractDeploymentLogs;
   });
 
-  const contractLogs = await Promise.all(promises);
+  const contractDeploymentLogs = await Promise.all(promises);
   const logDir = path.join(__dirname, "../contractLogs/");
-  const writer = fs.createWriteStream(logDir + "/deployContractLog.json");
-  await writer.write(JSON.stringify(contractLogs));
+  const writer = fs.createWriteStream(logDir + "/contractDeploymentLogs.json");
+  await writer.write(JSON.stringify(contractDeploymentLogs));
 }
 
 main();
