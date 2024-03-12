@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 async function main() {
-  const CONTRACT_DEPLOYMENT_LOGS = "contractDeploymentLogs.json";
+  const CONTRACT_DEPLOYMENT_LOGS = "contractDeploymentLog.json";
   const contractNames = ["Box", "RBAC"];
 
   if (contractNames.length == 0) {
