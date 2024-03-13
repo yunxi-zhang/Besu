@@ -1,6 +1,7 @@
-require("@nomicfoundation/hardhat-toolbox");
-require("@nomicfoundation/hardhat-ethers");
-require('@openzeppelin/hardhat-upgrades');
+import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-ethers";
+import '@openzeppelin/hardhat-upgrades';
+import { vars } from "hardhat/config";
 const ADMIN_ACCOUNT = vars.get("ADMIN_ACCOUNT");
 const USER1_ACCOUNT = vars.get("USER1_ACCOUNT");
 const USER2_ACCOUNT = vars.get("USER2_ACCOUNT");

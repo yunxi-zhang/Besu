@@ -1,6 +1,6 @@
-const { ethers, upgrades } = require("hardhat");
-const fs = require("fs");
-const path = require("path");
+import { ethers, upgrades } from "hardhat";
+import fs from "fs";
+import path from "path";
 
 async function main() {
   const CONTRACT_DEPLOYMENT_LOGS = "contractDeploymentLog.json";
@@ -17,8 +17,8 @@ async function main() {
       fs.readFileSync(contractDeploymentLogFilePath, "utf-8")
     );
     // Compare contractNames against the existing contract deploy logs to find out which contract has not been deployed once yet
-    for (i = 0; i < currentContractDeploymentLogs.length; i++) {
-      for (j = 0; j < contractNames.length; j++) {
+    for (let i = 0; i < currentContractDeploymentLogs.length; i++) {
+      for (let j = 0; j < contractNames.length; j++) {
         if (contractNames[j] == currentContractDeploymentLogs[i].contract) {
           const index = contractNames.indexOf(contractNames[j]);
           contractNames.splice(index, 1);

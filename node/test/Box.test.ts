@@ -1,13 +1,13 @@
-const { expect } = require("chai");
-const { ethers, network } = require("hardhat");
+import { expect } from "chai";
+import { ethers, upgrades } from "hardhat";
 
 // Start test block
 describe("Box", function () {
   let Box;
-  let ownerBox;
-  let owner;
-  let addr1;
-  let addr2;
+  let ownerBox: any;
+  let owner: any;
+  let addr1: any;
+  let addr2: any;
 
   before(async function () {
     [owner, addr1, addr2] = await ethers.getSigners();
@@ -24,7 +24,7 @@ describe("Box", function () {
   });
 
   it("should allow owner to get a value", async function () {
-    const newValue = 10;
+    const newValue: string = "10";
     const tx = await ownerBox.store(newValue);
     await tx.wait();
 
@@ -34,14 +34,14 @@ describe("Box", function () {
   });
 
   it("should disallow user1 to get a value", async function () {
-    const newValue = 20;
+    const newValue: string = "20";
     const tx = await ownerBox.store(newValue);
     await tx.wait();
     expect(tx).to.emit(ownerBox, newValue).withArgs(owner.address, newValue);
     const value = await ownerBox.connect(owner).retrieve();
     try {
       await ownerBox.connect(addr1).retrieve();
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).to.equal("Execution reverted");
     }
   });

@@ -1,7 +1,7 @@
 // scripts/upgrade_box.js
-const { ethers, upgrades } = require("hardhat");
-const fs = require("fs");
-const path = require("path");
+import { ethers, upgrades } from "hardhat";
+import fs from "fs";
+import path from "path";
 
 async function main() {
   const logDir = path.join(__dirname, "../contractLogs/");
@@ -9,7 +9,7 @@ async function main() {
     fs.readFileSync(logDir + "/contractDeploymentLog.json", "utf-8")
   );
 
-  const promises = contracts.map(async (contractObject) => {
+  const promises = contracts.map(async (contractObject: any) => {
     console.log(
       "Upgrading contract",
       contractObject.contract,
@@ -24,7 +24,7 @@ async function main() {
   const contractUpgradeResult = await Promise.all(promises);
   contractUpgradeResult.forEach((result) => {
     if (result.target) {
-      for (i = 0; i < contracts.length; i++) {
+      for (let i = 0; i < contracts.length; i++) {
         if (contracts[i].address == result.target) {
           console.log(
             "Contract",

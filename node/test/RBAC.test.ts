@@ -1,12 +1,12 @@
-const { expect } = require("chai");
-const { ethers, network } = require("hardhat");
+import { expect } from "chai";
+import { ethers, upgrades } from "hardhat";
 
 // Start test block
 describe("RBAC", function () {
   let RBAC;
-  let adminRBAC;
-  let admin;
-  let addr1;
+  let adminRBAC: any;
+  let admin: any;
+  let addr1: any;
 
   before(async function () {
     [admin, addr1] = await ethers.getSigners();
@@ -33,7 +33,7 @@ describe("RBAC", function () {
     const newValue = 10;
     try {
       await adminRBAC.adminStore(newValue);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).to.equal("Execution reverted");
     }
   });
@@ -52,7 +52,7 @@ describe("RBAC", function () {
     const newValue = 30;
     try {
       await adminRBAC.connect(addr1).store(newValue);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).to.equal("Execution reverted");
     }
   });
@@ -65,7 +65,7 @@ describe("RBAC", function () {
     await userGotPermission.wait();
     try {
       await adminRBAC.connect(addr1).retrieve();
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).to.equal("Execution reverted");
     }
   });

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy": "npx hardhat run --network besu scripts/deploy_upgradeable_contract.js",
-    "upgrade": "npx hardhat run --network besu scripts/upgrade.js",
+    "deploy": "npx hardhat run --network besu scripts/deploy_upgradeable_contract.ts",
+    "upgrade": "npx hardhat run --network besu scripts/upgrade.ts",
     "test": "npx hardhat test --network besu"
   },
   "keywords": [],

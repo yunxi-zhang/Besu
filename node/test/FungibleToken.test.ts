@@ -1,9 +1,11 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+import { expect } from "chai";
+import { ethers, upgrades } from "hardhat";
 
 describe("FungibleToken", function () {
   let Contract;
-  let contractInstance;
+  let contractInstance: any;
+  let owner: any;
+  let addr1: any;
   const tokenName = "star";
   const tokenSymbol = "*";
   const totalAmount = 1000;
