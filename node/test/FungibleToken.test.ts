@@ -65,7 +65,7 @@ describe("FungibleToken", function () {
   it("should disallow addr1 to get the remaining amount", async () => {
     try {
       await contractInstance.connect(addr1).balanceOf(addr1.address);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).to.equal("Execution reverted");
     }
   });
