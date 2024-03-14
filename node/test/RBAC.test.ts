@@ -1,3 +1,4 @@
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers, upgrades } from "hardhat";
 
@@ -5,8 +6,8 @@ import { ethers, upgrades } from "hardhat";
 describe("RBAC", function () {
   let RBAC;
   let adminRBAC: any;
-  let admin: any;
-  let addr1: any;
+  let admin: HardhatEthersSigner;
+  let addr1: HardhatEthersSigner;
 
   before(async function () {
     [admin, addr1] = await ethers.getSigners();

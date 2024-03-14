@@ -1,3 +1,4 @@
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers, upgrades } from "hardhat";
 
@@ -5,9 +6,9 @@ import { ethers, upgrades } from "hardhat";
 describe("Box", function () {
   let Box;
   let ownerBox: any;
-  let owner: any;
-  let addr1: any;
-  let addr2: any;
+  let owner: HardhatEthersSigner;
+  let addr1: HardhatEthersSigner;
+  let addr2: HardhatEthersSigner;
 
   before(async function () {
     [owner, addr1, addr2] = await ethers.getSigners();
