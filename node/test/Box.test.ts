@@ -4,14 +4,14 @@ import { ContractFactory } from "ethers/contract";
 import { ethers, upgrades } from "hardhat";
 
 // Start test block
-describe("Box", function () {
+describe("Box", () => {
   let Box: ContractFactory;
   let ownerBox: any;
   let owner: HardhatEthersSigner;
   let addr1: HardhatEthersSigner;
   let addr2: HardhatEthersSigner;
 
-  before(async function () {
+  before(async () => {
     [owner, addr1, addr2] = await ethers.getSigners();
     console.log("owner:", owner.address);
     console.log("addr1:", addr1.address);
@@ -25,7 +25,7 @@ describe("Box", function () {
     console.log("Contract deployed to address:", ownerBox.target);
   });
 
-  it("should allow owner to get a value", async function () {
+  it("should allow owner to get a value", async () => {
     const newValue: string = "10";
     const tx = await ownerBox.store(newValue);
     await tx.wait();
@@ -35,7 +35,7 @@ describe("Box", function () {
     expect(value).to.equal(newValue);
   });
 
-  it("should disallow user1 to get a value", async function () {
+  it("should disallow user1 to get a value", async () => {
     const newValue: string = "20";
     const tx = await ownerBox.store(newValue);
     await tx.wait();

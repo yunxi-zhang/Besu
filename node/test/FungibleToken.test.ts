@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { ContractFactory } from "ethers/contract";
 import { ethers, upgrades } from "hardhat";
 
-describe("FungibleToken", function () {
+describe("FungibleToken", () => {
   let Contract: ContractFactory;
   let contractInstance: any;
   let owner: HardhatEthersSigner;

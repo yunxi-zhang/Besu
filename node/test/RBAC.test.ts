@@ -4,13 +4,13 @@ import { ContractFactory } from "ethers/contract";
 import { ethers, upgrades } from "hardhat";
 
 // Start test block
-describe("RBAC", function () {
+describe("RBAC", () => {
   let RBAC: ContractFactory;
   let adminRBAC: any;
   let admin: HardhatEthersSigner;
   let addr1: HardhatEthersSigner;
 
-  before(async function () {
+  before(async () => {
     [admin, addr1] = await ethers.getSigners();
     console.log("admin:", admin.address);
     console.log("addr1:", addr1.address);
@@ -23,7 +23,7 @@ describe("RBAC", function () {
     console.log("Contract deployed to address:", adminRBAC.target);
   });
 
-  it("should allow admin to get a value by using the admin retrieve function", async function () {
+  it("should allow admin to get a value by using the admin retrieve function", async () => {
     const newValue = 10;
     const tx = await adminRBAC.store(newValue);
     await tx.wait();
@@ -31,7 +31,7 @@ describe("RBAC", function () {
     expect(value).to.equal(newValue);
   });
 
-  it("should disallow a default admin to store value by using the admin store function", async function () {
+  it("should disallow a default admin to store value by using the admin store function", async () => {
     const newValue = 10;
     try {
       await adminRBAC.adminStore(newValue);
@@ -40,7 +40,7 @@ describe("RBAC", function () {
     }
   });
 
-  it("should allow user1 to get a value by using the user retrieve function", async function () {
+  it("should allow user1 to get a value by using the user retrieve function", async () => {
     const newValue = 20;
     const tx = await adminRBAC.store(newValue);
     await tx.wait();
@@ -50,7 +50,7 @@ describe("RBAC", function () {
     expect(value).to.equal(newValue);
   });
 
-  it("should disallow user1 to store a value", async function () {
+  it("should disallow user1 to store a value", async () => {
     const newValue = 30;
     try {
       await adminRBAC.connect(addr1).store(newValue);
@@ -59,7 +59,7 @@ describe("RBAC", function () {
     }
   });
 
-  it("should disallow user1 to get a value by using the admin retrieve function", async function () {
+  it("should disallow user1 to get a value by using the admin retrieve function", async () => {
     const newValue = 40;
     const tx = await adminRBAC.store(newValue);
     await tx.wait();
