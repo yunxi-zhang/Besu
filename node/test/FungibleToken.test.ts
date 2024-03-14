@@ -22,7 +22,7 @@ describe("FungibleToken", () => {
     Contract = await ethers.getContractFactory("FungibleToken");
     contractInstance = await upgrades.deployProxy(
       Contract,
-      [tokenName, tokenSymbol, owner.address, totalAmount],
+      [owner.address, tokenName, tokenSymbol, totalAmount],
       {
         initializer: "initialize",
       }

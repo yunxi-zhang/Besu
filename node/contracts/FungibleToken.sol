@@ -6,9 +6,9 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
 contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
     function initialize(
+        address account,
         string memory name,
         string memory symbol,
-        address account,
         uint256 value
     ) public initializer {
         __ERC20_init(name, symbol);
