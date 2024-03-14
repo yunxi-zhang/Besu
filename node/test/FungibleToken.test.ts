@@ -1,9 +1,10 @@
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { expect } from "chai";
+import { ContractFactory } from "ethers/contract";
 import { ethers, upgrades } from "hardhat";
 
 describe("FungibleToken", function () {
-  let Contract;
+  let Contract: ContractFactory;
   let contractInstance: any;
   let owner: HardhatEthersSigner;
   let addr1: HardhatEthersSigner;

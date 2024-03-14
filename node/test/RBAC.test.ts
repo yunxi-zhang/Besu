@@ -1,10 +1,11 @@
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { expect } from "chai";
+import { ContractFactory } from "ethers/contract";
 import { ethers, upgrades } from "hardhat";
 
 // Start test block
 describe("RBAC", function () {
-  let RBAC;
+  let RBAC: ContractFactory;
   let adminRBAC: any;
   let admin: HardhatEthersSigner;
   let addr1: HardhatEthersSigner;
