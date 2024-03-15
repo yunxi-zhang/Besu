@@ -12,7 +12,7 @@ async function main() {
 
   let contractNames = getAllContractNames();
   if (contractNames != undefined) {
-    let currentContractDeploymentLogs = getContractDeploymentLogs();
+    const currentContractDeploymentLogs = getContractDeploymentLogs();
     const nonDeployedContractNames = getNonDeployedContractNames(
       currentContractDeploymentLogs,
       contractNames
