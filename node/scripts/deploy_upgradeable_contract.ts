@@ -12,13 +12,12 @@ async function main() {
 
   let contractNames = getAllContractNames();
   if (contractNames != undefined) {
-    let currentContractDeploymentLogs =
-      getContractDeploymentLogs(contractNames);
-    contractNames = getNonDeployedContractNames(
+    let currentContractDeploymentLogs = getContractDeploymentLogs();
+    const nonDeployedContractNames = getNonDeployedContractNames(
       currentContractDeploymentLogs,
       contractNames
     );
-    const contractDeploymentResult: any = await deployContracts(contractNames);
+    const contractDeploymentResult: any = await deployContracts(nonDeployedContractNames);
     if (contractDeploymentResult != undefined) {
       await writeContractDeployLogs(
         currentContractDeploymentLogs,
@@ -36,7 +35,14 @@ async function main() {
       const contractConfig = JSON.parse(
         fs.readFileSync(contractConfigFilePath, "utf-8")
       );
-      return contractConfig;
+      if (contractConfig.length == 0) {
+        console.log(
+          "No contract names detected, please add at least one contract name to the contractNames."
+        );
+        return;
+      } else {
+        return contractConfig;
+      }
     } else {
       console.log(
         CONTRACT_CONFIG_FILE,
@@ -46,26 +52,19 @@ async function main() {
     }
   }
 
-  function getContractDeploymentLogs(contractNames: any) {
-    if (contractNames.length == 0) {
+  function getContractDeploymentLogs() {
+    let currentContractDeploymentLogs: any;
+    if (fs.existsSync(contractDeploymentLogFilePath)) {
+      currentContractDeploymentLogs = JSON.parse(
+        fs.readFileSync(contractDeploymentLogFilePath, "utf-8")
+      );
+      return currentContractDeploymentLogs;
+    } else {
       console.log(
-        "No contract names detected, please add at least one contract name to the contractNames."
+        CONTRACT_DEPLOYMENT_LOGS,
+        "doesn't exist, will create a new one soon"
       );
       return;
-    } else {
-      let currentContractDeploymentLogs: any;
-      if (fs.existsSync(contractDeploymentLogFilePath)) {
-        currentContractDeploymentLogs = JSON.parse(
-          fs.readFileSync(contractDeploymentLogFilePath, "utf-8")
-        );
-        return currentContractDeploymentLogs;
-      } else {
-        console.log(
-          CONTRACT_DEPLOYMENT_LOGS,
-          "doesn't exist, will create a new one soon"
-        );
-        return;
-      }
     }
   }
 
