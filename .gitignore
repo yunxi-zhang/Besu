@@ -37,7 +37,6 @@ Temporary Items
 ### Node ###
 # Logs
 contractDeploymentLog.json
-erc20ContractDeploymentLog.json
 logs
 *.log
 npm-debug.log*
