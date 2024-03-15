@@ -11,12 +11,25 @@ async function main() {
   const contractConfigFilePath = contractConfigDir + CONTRACT_CONFIG_FILE;
 
   let contractNames = getAllContractNames();
-  let currentContractDeploymentLogs =
-    getContractDeploymentLogs(contractNames);
-  contractNames = getNonDeployedContractNames(
-    currentContractDeploymentLogs,
-    contractNames
-  );
+  if (contractNames != undefined) {
+    let currentContractDeploymentLogs =
+      getContractDeploymentLogs(contractNames);
+    contractNames = getNonDeployedContractNames(
+      currentContractDeploymentLogs,
+      contractNames
+    );
+    const contractDeploymentResult: any = await deployContracts(contractNames);
+    if (contractDeploymentResult != undefined) {
+      await writeContractDeployLogs(
+        currentContractDeploymentLogs,
+        contractDeploymentResult
+      );
+    } else {
+      return;
+    }
+  } else {
+    return;
+  }
 
   function getAllContractNames() {
     if (fs.existsSync(contractConfigFilePath)) {
@@ -61,73 +74,86 @@ async function main() {
     contractNames: any
   ) {
     // Compare contractNames against the existing contract deploy logs to find out which contract has not been deployed once yet
-    if (currentContractDeploymentLogs.length > 0) {
+    if (currentContractDeploymentLogs == undefined) {
+      return contractNames;
+    } else {
       for (let i = 0; i < currentContractDeploymentLogs.length; i++) {
         for (let j = 0; j < contractNames.length; j++) {
           if (contractNames[j] == currentContractDeploymentLogs[i].contract) {
             const index = contractNames.indexOf(contractNames[j]);
             contractNames.splice(index, 1);
-            return contractNames;
+            break;
           }
         }
       }
-    } else {
       return contractNames;
     }
   }
 
-  // If the above comparision finds out any contract(s) that has/have not been deployed for once yet, deploy it/them
-  if (contractNames.length > 0) {
-    const [deployer] = await ethers.getSigners();
-    console.log("Deploying contracts with the account:", deployer.address);
-    const promises = contractNames.map(async (contractName: string) => {
-      const contract = await ethers.getContractFactory(contractName);
-      const contractInstance = await upgrades.deployProxy(
-        contract,
-        [deployer.address],
-        {
-          initializer: "initialize",
-        }
-      );
-      await contractInstance.waitForDeployment();
+  async function deployContracts(contractNames: string[]) {
+    // If the above comparision finds out any contract(s) that has/have not been deployed for once yet, deploy it/them
+    if (contractNames.length > 0) {
+      const [deployer] = await ethers.getSigners();
+      console.log("Deploying contracts with the account:", deployer.address);
+      const promises = contractNames.map(async (contractName: string) => {
+        const contract = await ethers.getContractFactory(contractName);
+        const contractInstance = await upgrades.deployProxy(
+          contract,
+          [deployer.address],
+          {
+            initializer: "initialize",
+          }
+        );
+        await contractInstance.waitForDeployment();
+        console.log(
+          "contract",
+          contractName,
+          "deployed to:",
+          contractInstance.target
+        );
+
+        const timeStamp = Date.now();
+        const date = new Date(timeStamp);
+        console.log("timeStamp:", timeStamp);
+        console.log("date:", date);
+        const contractDeploymentLogs = {
+          contract: contractName,
+          address: contractInstance.target,
+          timeStamp: timeStamp,
+          humanReadableTimeStamp: date,
+        };
+        return contractDeploymentLogs;
+      });
+      return Promise.all(promises);
+    } else {
       console.log(
-        "contract",
-        contractName,
-        "deployed to:",
-        contractInstance.target
+        "All the contracts have been deployed once, please run the upgrade.js to upgrade all the contracts"
       );
+      return;
+    }
+  }
 
-      const timeStamp = Date.now();
-      const date = new Date(timeStamp);
-      console.log("timeStamp:", timeStamp);
-      console.log("date:", date);
-      const contractDeploymentLogs = {
-        contract: contractName,
-        address: contractInstance.target,
-        timeStamp: timeStamp,
-        humanReadableTimeStamp: date,
-      };
-      return contractDeploymentLogs;
-    });
-
-    const contractDeploymentLogs = await Promise.all(promises);
+  async function writeContractDeployLogs(
+    currentContractDeploymentLogs: any,
+    contractDeploymentResult: any
+  ) {
     if (currentContractDeploymentLogs == undefined) {
       currentContractDeploymentLogs = [];
-      contractDeploymentLogs.forEach((newLogs) => {
+      contractDeploymentResult.forEach((newLogs: any) => {
         currentContractDeploymentLogs.push(newLogs);
       });
     } else {
-      contractDeploymentLogs.forEach((newLogs) => {
+      contractDeploymentResult.forEach((newLogs: any) => {
         currentContractDeploymentLogs.push(newLogs);
       });
     }
+    console.log(
+      "currentContractDeploymentLogs:",
+      currentContractDeploymentLogs
+    );
     const newContractDeploymentLogs = currentContractDeploymentLogs;
     const writer = fs.createWriteStream(logDir + CONTRACT_DEPLOYMENT_LOGS);
     await writer.write(JSON.stringify(newContractDeploymentLogs));
-  } else {
-    console.log(
-      "All the contracts have been deployed once, please run the upgrade.js to upgrade all the contracts"
-    );
   }
 }
 
