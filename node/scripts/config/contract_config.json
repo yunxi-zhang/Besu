@@ -1,4 +1,18 @@
 [
-    "Box",
-    "RBAC"
+    {
+        "contract": "Box",
+        "options": ""
+    },
+    {
+        "contract": "RBAC",
+        "options": ""
+    },
+    {
+        "contract": "FungibleToken",
+        "options": {
+            "tokenName": "star",
+            "tokenSymbol": "*",
+            "totalAmount": 1000
+        }
+    }
 ]

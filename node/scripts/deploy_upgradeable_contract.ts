@@ -13,11 +13,13 @@ async function main() {
   let contractNames = getAllContractNames();
   if (contractNames != undefined) {
     const currentContractDeploymentLogs = getContractDeploymentLogs();
-    const nonDeployedContractNames = getNonDeployedContractNames(
+    const nonDeployedContracts = getNonDeployedContractNames(
       currentContractDeploymentLogs,
       contractNames
     );
-    const contractDeploymentResult: any = await deployContracts(nonDeployedContractNames);
+    const contractDeploymentResult: any = await deployContracts(
+      nonDeployedContracts
+    );
     if (contractDeploymentResult != undefined) {
       await writeContractDeployLogs(
         currentContractDeploymentLogs,
@@ -78,7 +80,10 @@ async function main() {
     } else {
       for (let i = 0; i < currentContractDeploymentLogs.length; i++) {
         for (let j = 0; j < contractNames.length; j++) {
-          if (contractNames[j] == currentContractDeploymentLogs[i].contract) {
+          if (
+            contractNames[j].contract ==
+            currentContractDeploymentLogs[i].contract
+          ) {
             const index = contractNames.indexOf(contractNames[j]);
             contractNames.splice(index, 1);
             break;
@@ -89,39 +94,71 @@ async function main() {
     }
   }
 
-  async function deployContracts(contractNames: string[]) {
+  async function deployContracts(nonDeployedContracts: any) {
     // If the above comparision finds out any contract(s) that has/have not been deployed for once yet, deploy it/them
-    if (contractNames.length > 0) {
+    if (nonDeployedContracts.length > 0) {
       const [deployer] = await ethers.getSigners();
       console.log("Deploying contracts with the account:", deployer.address);
-      const promises = contractNames.map(async (contractName: string) => {
-        const contract = await ethers.getContractFactory(contractName);
-        const contractInstance = await upgrades.deployProxy(
-          contract,
-          [deployer.address],
-          {
-            initializer: "initialize",
-          }
-        );
-        await contractInstance.waitForDeployment();
-        console.log(
-          "contract",
-          contractName,
-          "deployed to:",
-          contractInstance.target
-        );
-
-        const timeStamp = Date.now();
-        const date = new Date(timeStamp);
-        console.log("timeStamp:", timeStamp);
-        console.log("date:", date);
-        const contractDeploymentLogs = {
-          contract: contractName,
-          address: contractInstance.target,
-          timeStamp: timeStamp,
-          humanReadableTimeStamp: date,
-        };
-        return contractDeploymentLogs;
+      const promises = nonDeployedContracts.map(async (contractObject: any) => {
+        if (contractObject.options.length == 0) {
+          const contract = await ethers.getContractFactory(
+            contractObject.contract
+          );
+          const contractInstance = await upgrades.deployProxy(
+            contract,
+            [deployer.address],
+            {
+              initializer: "initialize",
+            }
+          );
+          await contractInstance.waitForDeployment();
+          console.log(
+            "contract",
+            contractObject.contract,
+            "deployed to:",
+            contractInstance.target
+          );
+          const timeStamp = Date.now();
+          const date = new Date(timeStamp);
+          console.log("timeStamp:", timeStamp);
+          console.log("date:", date);
+          const contractDeploymentLogs = {
+            contract: contractObject.contract,
+            address: contractInstance.target,
+            timeStamp: timeStamp,
+            humanReadableTimeStamp: date,
+          };
+          return contractDeploymentLogs;
+        } else {
+          const contract = await ethers.getContractFactory(
+            contractObject.contract
+          );
+          const contractInstance = await upgrades.deployProxy(
+            contract,
+            [deployer.address, contractObject.options.tokenName, contractObject.options.tokenSymbol, contractObject.options.totalAmount],
+            {
+              initializer: "initialize",
+            }
+          );
+          await contractInstance.waitForDeployment();
+          console.log(
+            "contract",
+            contractObject.contract,
+            "deployed to:",
+            contractInstance.target
+          );
+          const timeStamp = Date.now();
+          const date = new Date(timeStamp);
+          console.log("timeStamp:", timeStamp);
+          console.log("date:", date);
+          const contractDeploymentLogs = {
+            contract: contractObject.contract,
+            address: contractInstance.target,
+            timeStamp: timeStamp,
+            humanReadableTimeStamp: date,
+          };
+          return contractDeploymentLogs;
+        }
       });
       return Promise.all(promises);
     } else {

@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "deploy": "npx hardhat run --network besu scripts/deploy_upgradeable_contract.ts",
-    "deployerc20": "npx hardhat run --network besu scripts/deploy_upgradeable_erc20_contract.ts",
     "upgrade": "npx hardhat run --network besu scripts/upgrade.ts",
     "test": "npx hardhat test --network besu"
   },
