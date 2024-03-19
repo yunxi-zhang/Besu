@@ -1,7 +1,10 @@
-import { ethers } from "ethers";
+import { Wallet, ethers } from "ethers";
+import dotenv from "dotenv";
+dotenv.config();
 
 const FUNGIBLE_TOKEN_CONTRACT_ADDRESS =
   "0x4C8bB16904f017C6D193dB8bf79461c60b90ae19";
+const OWNER_PRIVATE_KEY: any = process.env.OWNER_PRIVATE_KEY;
 const BESU_URL = "http://127.0.0.1:8545";
 const abi = [
   {
@@ -625,9 +628,12 @@ const abi = [
     type: "function",
   },
 ];
+const provider = new ethers.JsonRpcProvider(BESU_URL, {
+  name: "besu",
+  chainId: 1337,
+});
 
 const getBalance = async (account: string) => {
-  const provider = await new ethers.JsonRpcProvider(BESU_URL);
   const contract = new ethers.Contract(
     FUNGIBLE_TOKEN_CONTRACT_ADDRESS,
     abi,
@@ -637,8 +643,27 @@ const getBalance = async (account: string) => {
   return balance.toString();
 };
 
+const transfer = async (targetAccount: string, amount: number) => {
+  try {
+    const signer = new Wallet(OWNER_PRIVATE_KEY, provider);
+    const contract = new ethers.Contract(
+      FUNGIBLE_TOKEN_CONTRACT_ADDRESS,
+      abi,
+      signer
+    );
+    const tx = await contract.transfer(targetAccount, amount);
+    await tx.wait();
+    console.log("tx:", tx);
+    return tx;
+  } catch (err) {
+    console.log("err:", err);
+    return err;
+  }
+};
+
 const _ = {
   getBalance,
+  transfer,
 };
 
 export default _;

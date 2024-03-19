@@ -1,5 +1,5 @@
 import express from "express";
-import { tokenRoute } from "./defaultRoute";
+import { tokenRoute } from "./tokenRoute";
 
 export const routes = express.Router();
 
