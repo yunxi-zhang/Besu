@@ -1,11 +1,12 @@
 import { Router } from "express";
-
+import fungibleToken from "../business/FungibleToken";
 export const defaultRoute = Router();
 
-defaultRoute.get("/", (req, res) => {
-  res.send("send from default route!");
-});
-
-defaultRoute.get("/fungibleToken/balance", (req, res) => {
-  res.send("balance api for fungible token!");
+defaultRoute.get("/fungibleToken/balance/:account", async (req, res) => {
+  const account = req.params.account;
+  const balance: any = await fungibleToken.getBalance(account);
+  const response = {
+    "balance": balance
+  }
+  res.send(response);
 });

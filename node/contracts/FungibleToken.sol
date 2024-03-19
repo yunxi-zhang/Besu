@@ -24,7 +24,6 @@ contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
         view
         virtual
         override
-        onlyRole(DEFAULT_ADMIN_ROLE)
         returns (uint256)
     {
         return super.balanceOf(account);

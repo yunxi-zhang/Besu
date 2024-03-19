@@ -4,6 +4,10 @@
     "incremental": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "outDir": "./dist"
-  }
+    "outDir": "./dist",
+    "rootDirs": ["./src", "./scripts", "./test"]
+  },
+  "exclude": ["dist", "node_modules"],
+  "include": ["./test", "./src", "./scripts"],
+  "files": ["./hardhat.config.ts"]
 }
