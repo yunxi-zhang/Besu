@@ -2,8 +2,6 @@ import { Wallet, ethers } from "ethers";
 import dotenv from "dotenv";
 dotenv.config();
 
-const FUNGIBLE_TOKEN_CONTRACT_ADDRESS =
-  "0x4C8bB16904f017C6D193dB8bf79461c60b90ae19";
 const OWNER_PRIVATE_KEY: any = process.env.OWNER_PRIVATE_KEY;
 const BESU_URL = "http://127.0.0.1:8545";
 const abi = [
@@ -633,12 +631,13 @@ const provider = new ethers.JsonRpcProvider(BESU_URL, {
   chainId: 1337,
 });
 
+let contractAddress: string;
+const setContractAddress = (address: string) => {
+  contractAddress = address;
+};
+
 const getBalance = async (account: string) => {
-  const contract = new ethers.Contract(
-    FUNGIBLE_TOKEN_CONTRACT_ADDRESS,
-    abi,
-    provider
-  );
+  const contract = new ethers.Contract(contractAddress, abi, provider);
   const balance = await contract.balanceOf(account);
   return balance.toString();
 };
@@ -646,14 +645,10 @@ const getBalance = async (account: string) => {
 const transfer = async (targetAccount: string, amount: number) => {
   try {
     const signer = new Wallet(OWNER_PRIVATE_KEY, provider);
-    const contract = new ethers.Contract(
-      FUNGIBLE_TOKEN_CONTRACT_ADDRESS,
-      abi,
-      signer
-    );
+    const contract = new ethers.Contract(contractAddress, abi, signer);
     const tx = await contract.transfer(targetAccount, amount);
     await tx.wait();
-    console.log("tx:", tx);
+    console.log("transfer tx response:", tx);
     return tx;
   } catch (err) {
     console.log("err:", err);
@@ -662,6 +657,7 @@ const transfer = async (targetAccount: string, amount: number) => {
 };
 
 const _ = {
+  setContractAddress,
   getBalance,
   transfer,
 };
