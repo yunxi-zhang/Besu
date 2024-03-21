@@ -33,11 +33,11 @@ contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
         return 2;
     }
 
-    function mint(address account, uint256 value) public {
+    function mint(address account, uint256 value) public onlyRole(DEFAULT_ADMIN_ROLE){
         super._mint(account, value);
     }
 
-    function burn(address account, uint256 value) public {
+    function burn(address account, uint256 value) public onlyRole(DEFAULT_ADMIN_ROLE){
         super._burn(account, value);
     }
 }

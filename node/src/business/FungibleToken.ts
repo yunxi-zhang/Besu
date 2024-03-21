@@ -4,6 +4,7 @@ dotenv.config();
 
 const OWNER_PRIVATE_KEY: any = process.env.OWNER_PRIVATE_KEY;
 const USER1_PRIVATE_KEY: any = process.env.USER1_PRIVATE_KEY;
+const OWNER_ACCOUNT: any = process.env.OWNER_ACCOUNT;
 const BESU_URL = "http://127.0.0.1:8545";
 const abi = [
   {
@@ -653,7 +654,7 @@ const getSigner = () => {
       signer = new Wallet(USER1_PRIVATE_KEY, provider);
       break;
     default:
-      throw new Error("userType is missing");
+      throw new Error("user role is missing");
   }
 };
 
@@ -677,11 +678,41 @@ const transfer = async (targetAccount: string, amount: number) => {
   }
 };
 
+const mint = async (amount: number) => {
+  try {
+    getSigner();
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+    const tx = await contract.mint(OWNER_ACCOUNT, amount);
+    await tx.wait();
+    console.log("transfer tx response:", tx);
+    return tx;
+  } catch (err) {
+    console.log("Err:", err);
+    return err;
+  }
+};
+
+const burn = async (amount: number) => {
+  try {
+    getSigner();
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+    const tx = await contract.burn(OWNER_ACCOUNT, amount);
+    await tx.wait();
+    console.log("transfer tx response:", tx);
+    return tx;
+  } catch (err) {
+    console.log("Err:", err);
+    return err;
+  }
+};
+
 const _ = {
   setContractAddress,
   setUserRole,
   getBalance,
   transfer,
+  mint,
+  burn
 };
 
 export default _;
