@@ -1,7 +1,7 @@
 import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
-import getFiles from "../util/getFiles";
+import files from "../util/files";
 
 async function main() {
   const CONTRACT_DEPLOYMENT_LOGS = "contractDeploymentLog.json";
@@ -12,7 +12,7 @@ async function main() {
 
   let contractNames = getAllContractNames();
   if (contractNames != undefined) {
-    const currentContractDeploymentLogs = getFiles.getContractDeploymentLogs();
+    const currentContractDeploymentLogs = files.getContractDeploymentLogs();
     const nonDeployedContracts = getNonDeployedContractNames(
       currentContractDeploymentLogs,
       contractNames

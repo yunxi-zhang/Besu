@@ -1,12 +1,12 @@
 import { Router } from "express";
 import fungibleToken from "../business/FungibleToken";
-import getFiles from "../../util/getFiles";
+import files from "../../util/files";
 export const tokenRoute = Router();
 
 let contractAddress: any;
 
 tokenRoute.use((req, res, next) => {
-  let currentContractDeploymentLogs: any = getFiles.getContractDeploymentLogs();
+  let currentContractDeploymentLogs: any = files.getContractDeploymentLogs();
   for (let i = 0; i < currentContractDeploymentLogs.length; i++) {
     if (currentContractDeploymentLogs[i].contract == "FungibleToken") {
       contractAddress = currentContractDeploymentLogs[i].address;
