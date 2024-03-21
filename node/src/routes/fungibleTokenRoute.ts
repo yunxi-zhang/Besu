@@ -1,6 +1,6 @@
 import { Router } from "express";
 import fungibleToken from "../business/FungibleToken";
-import files from "../../util/files";
+import files from "../../utils/files";
 export const fungileTokenRoute = Router();
 
 let contractAddress: any;

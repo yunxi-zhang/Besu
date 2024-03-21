@@ -1,7 +1,7 @@
 import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
-import files from "../util/files";
+import files from "../utils/files";
 
 async function main() {
   const CONTRACT_DEPLOYMENT_LOGS = "contractDeploymentLog.json";
