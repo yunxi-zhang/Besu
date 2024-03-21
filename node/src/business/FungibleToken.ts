@@ -1,5 +1,6 @@
 import { Wallet, ethers } from "ethers";
 import dotenv from "dotenv";
+import { ErrorDecoder } from "ethers-decode-error";
 dotenv.config();
 
 const OWNER_PRIVATE_KEY: any = process.env.OWNER_PRIVATE_KEY;
@@ -16,6 +17,7 @@ let contractAddress: string;
 let userRole: string;
 let abi: any;
 let signer: Wallet;
+let errorDecoder: any;
 
 const setContractAddress = (address: string) => {
   contractAddress = address;
@@ -27,7 +29,8 @@ const setUserRole = (role: string) => {
 
 const setABI = (abiObject: any) => {
   abi = abiObject;
-}
+  errorDecoder = ErrorDecoder.create([abi]);
+};
 
 const getSigner = () => {
   switch (userRole) {
@@ -48,11 +51,11 @@ const getBalance = async (account: string) => {
   return balance.toString();
 };
 
-const transfer = async (targetAccount: string, amount: number) => {
+const transfer = async (targetAccount: string, value: number) => {
   try {
     getSigner();
     const contract = new ethers.Contract(contractAddress, abi, signer);
-    const tx = await contract.transfer(targetAccount, amount);
+    const tx = await contract.transfer(targetAccount, value);
     await tx.wait();
     console.log("transfer tx response:", tx);
     return tx;
@@ -62,31 +65,33 @@ const transfer = async (targetAccount: string, amount: number) => {
   }
 };
 
-const mint = async (amount: number) => {
+const mint = async (value: number) => {
   try {
     getSigner();
     const contract = new ethers.Contract(contractAddress, abi, signer);
-    const tx = await contract.mint(OWNER_ACCOUNT, amount);
+    const tx = await contract.mint(OWNER_ACCOUNT, value);
     await tx.wait();
     console.log("transfer tx response:", tx);
     return tx;
   } catch (err) {
-    console.log("Err:", err);
-    return err;
+    const { reason } = await errorDecoder.decode(err);
+    console.log("Revert reason:", reason);
+    return { error: reason };
   }
 };
 
-const burn = async (amount: number) => {
+const burn = async (value: number) => {
   try {
     getSigner();
     const contract = new ethers.Contract(contractAddress, abi, signer);
-    const tx = await contract.burn(OWNER_ACCOUNT, amount);
+    const tx = await contract.burn(OWNER_ACCOUNT, value);
     await tx.wait();
     console.log("transfer tx response:", tx);
     return tx;
   } catch (err) {
-    console.log("Err:", err);
-    return err;
+    const { reason } = await errorDecoder.decode(err);
+    console.log("Revert reason:", reason);
+    return { error: reason };
   }
 };
 

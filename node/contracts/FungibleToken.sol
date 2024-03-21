@@ -17,7 +17,7 @@ contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
         _grantRole(DEFAULT_ADMIN_ROLE, account);
     }
 
-    error ValueExcceedsMaximum();
+    error ValueCannotExcceedsOneThound();
 
     function balanceOf(
         address account
@@ -33,7 +33,7 @@ contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
         address account,
         uint256 value
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (value > 10000) revert ValueExcceedsMaximum();
+        if (value > 1000) revert ValueCannotExcceedsOneThound();
         super._mint(account, value);
     }
 
@@ -41,6 +41,7 @@ contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
         address account,
         uint256 value
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (value > 1000) revert ValueCannotExcceedsOneThound();
         super._burn(account, value);
     }
 }

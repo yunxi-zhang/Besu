@@ -31,19 +31,19 @@ fungileTokenRoute.get("/fungibleToken/balance/:account", async (req, res) => {
 
 fungileTokenRoute.put("/fungibleToken/transfer", async (req, res) => {
   const targetAccount = req.body.targetAccount;
-  const amount = req.body.amount;
-  const txResponse = await fungibleToken.transfer(targetAccount, amount);
+  const value = req.body.value;
+  const txResponse = await fungibleToken.transfer(targetAccount, value);
   res.send(txResponse);
 });
 
 fungileTokenRoute.put("/fungibleToken/mint", async (req, res) => {
-  const amount = req.body.amount;
-  const txResponse = await fungibleToken.mint(amount);
+  const value = req.body.value;
+  const txResponse = await fungibleToken.mint(value);
   res.send(txResponse);
 });
 
 fungileTokenRoute.put("/fungibleToken/burn", async (req, res) => {
-  const amount = req.body.amount;
-  const txResponse = await fungibleToken.burn(amount);
+  const value = req.body.value;
+  const txResponse = await fungibleToken.burn(value);
   res.send(txResponse);
 });
