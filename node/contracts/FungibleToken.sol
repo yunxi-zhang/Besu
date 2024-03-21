@@ -17,6 +17,8 @@ contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
         _grantRole(DEFAULT_ADMIN_ROLE, account);
     }
 
+    error ValueExcceedsMaximum();
+
     function balanceOf(
         address account
     ) public view virtual override returns (uint256) {
@@ -31,6 +33,7 @@ contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
         address account,
         uint256 value
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (value > 10000) revert ValueExcceedsMaximum();
         super._mint(account, value);
     }
 

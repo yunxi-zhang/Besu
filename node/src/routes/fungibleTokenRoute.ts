@@ -4,6 +4,7 @@ import files from "../../utils/files";
 export const fungileTokenRoute = Router();
 
 let contractAddress: any;
+const contractName = "FungibleToken";
 
 fungileTokenRoute.use((req, res, next) => {
   let currentContractDeploymentLogs: any = files.getContractDeploymentLogs();
@@ -15,6 +16,7 @@ fungileTokenRoute.use((req, res, next) => {
   }
   fungibleToken.setContractAddress(contractAddress);
   fungibleToken.setUserRole(req.body.role);
+  fungibleToken.setABI(files.getABI(contractName));
   next();
 });
 
