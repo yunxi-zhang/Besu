@@ -1,6 +1,5 @@
 import { Wallet, ethers } from "ethers";
 import dotenv from "dotenv";
-import { error } from "console";
 dotenv.config();
 
 const OWNER_PRIVATE_KEY: any = process.env.OWNER_PRIVATE_KEY;
