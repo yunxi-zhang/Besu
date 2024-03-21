@@ -44,6 +44,7 @@ tokenRoute.get("/fungibleToken/balance/:account", async (req, res) => {
 tokenRoute.post("/fungibleToken/transfer", async (req, res) => {
   const targetAccount = req.body.targetAccount;
   const amount = req.body.amount;
+  fungibleToken.setUserRole(req.body.role);
   const txResponse = await fungibleToken.transfer(targetAccount, amount);
   res.send(txResponse);
 });

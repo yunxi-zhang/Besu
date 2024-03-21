@@ -1,8 +1,10 @@
 import { Wallet, ethers } from "ethers";
 import dotenv from "dotenv";
+import { error } from "console";
 dotenv.config();
 
 const OWNER_PRIVATE_KEY: any = process.env.OWNER_PRIVATE_KEY;
+const USER1_PRIVATE_KEY: any = process.env.USER1_PRIVATE_KEY;
 const BESU_URL = "http://127.0.0.1:8545";
 const abi = [
   {
@@ -632,8 +634,28 @@ const provider = new ethers.JsonRpcProvider(BESU_URL, {
 });
 
 let contractAddress: string;
+let userRole: string;
+let signer: Wallet;
+
 const setContractAddress = (address: string) => {
   contractAddress = address;
+};
+
+const setUserRole = (role: string) => {
+  userRole = role;
+};
+
+const getSigner = () => {
+  switch (userRole) {
+    case "owner":
+      signer = new Wallet(OWNER_PRIVATE_KEY, provider);
+      break;
+    case "user1":
+      signer = new Wallet(USER1_PRIVATE_KEY, provider);
+      break;
+    default:
+      throw new Error("userType is missing");
+  }
 };
 
 const getBalance = async (account: string) => {
@@ -644,20 +666,21 @@ const getBalance = async (account: string) => {
 
 const transfer = async (targetAccount: string, amount: number) => {
   try {
-    const signer = new Wallet(OWNER_PRIVATE_KEY, provider);
+    getSigner();
     const contract = new ethers.Contract(contractAddress, abi, signer);
     const tx = await contract.transfer(targetAccount, amount);
     await tx.wait();
     console.log("transfer tx response:", tx);
     return tx;
   } catch (err) {
-    console.log("err:", err);
+    console.log("Err:", err);
     return err;
   }
 };
 
 const _ = {
   setContractAddress,
+  setUserRole,
   getBalance,
   transfer,
 };
