@@ -1,35 +1,21 @@
 import { Router } from "express";
 import fungibleToken from "../business/FungibleToken";
-import fs from "fs";
-import path from "path";
+import getFiles from "../../util/getFiles";
 export const tokenRoute = Router();
 
-const CONTRACT_DEPLOYMENT_LOGS = "contractDeploymentLog.json";
-const logDir = path.join(__dirname, "../../contractLogs/");
-const contractDeploymentLogFilePath = logDir + CONTRACT_DEPLOYMENT_LOGS;
 let contractAddress: any;
 
 tokenRoute.use((req, res, next) => {
-  let currentContractDeploymentLogs: any;
-  if (fs.existsSync(contractDeploymentLogFilePath)) {
-    currentContractDeploymentLogs = JSON.parse(
-      fs.readFileSync(contractDeploymentLogFilePath, "utf-8")
-    );
-    for (let i = 0; i < currentContractDeploymentLogs.length; i++) {
-      if (currentContractDeploymentLogs[i].contract == "FungibleToken") {
-        contractAddress = currentContractDeploymentLogs[i].address;
-        break;
-      }
+  let currentContractDeploymentLogs: any = getFiles.getContractDeploymentLogs();
+  for (let i = 0; i < currentContractDeploymentLogs.length; i++) {
+    if (currentContractDeploymentLogs[i].contract == "FungibleToken") {
+      contractAddress = currentContractDeploymentLogs[i].address;
+      break;
     }
-    fungibleToken.setContractAddress(contractAddress);
-    next();
-  } else {
-    console.log(
-      CONTRACT_DEPLOYMENT_LOGS,
-      "doesn't exist, please run the deployment script to generate the contract deployment logs first."
-    );
-    res.status(500).send("Server breaks down!");
   }
+  fungibleToken.setContractAddress(contractAddress);
+  fungibleToken.setUserRole(req.body.role);
+  next();
 });
 
 tokenRoute.get("/fungibleToken/balance/:account", async (req, res) => {
@@ -44,7 +30,6 @@ tokenRoute.get("/fungibleToken/balance/:account", async (req, res) => {
 tokenRoute.post("/fungibleToken/transfer", async (req, res) => {
   const targetAccount = req.body.targetAccount;
   const amount = req.body.amount;
-  fungibleToken.setUserRole(req.body.role);
   const txResponse = await fungibleToken.transfer(targetAccount, amount);
   res.send(txResponse);
 });

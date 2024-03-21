@@ -1,18 +1,18 @@
 import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
+import getFiles from "../util/getFiles";
 
 async function main() {
   const CONTRACT_DEPLOYMENT_LOGS = "contractDeploymentLog.json";
   const CONTRACT_CONFIG_FILE = "contract_config.json";
   const logDir = path.join(__dirname, "../contractLogs/");
-  const contractDeploymentLogFilePath = logDir + CONTRACT_DEPLOYMENT_LOGS;
   const contractConfigDir = path.join(__dirname, "./config/");
   const contractConfigFilePath = contractConfigDir + CONTRACT_CONFIG_FILE;
 
   let contractNames = getAllContractNames();
   if (contractNames != undefined) {
-    const currentContractDeploymentLogs = getContractDeploymentLogs();
+    const currentContractDeploymentLogs = getFiles.getContractDeploymentLogs();
     const nonDeployedContracts = getNonDeployedContractNames(
       currentContractDeploymentLogs,
       contractNames
@@ -49,22 +49,6 @@ async function main() {
       console.log(
         CONTRACT_CONFIG_FILE,
         "doesn't exist, can't continue. This config file must be manually created as a pre-req for this deployment script to run!!!"
-      );
-      return;
-    }
-  }
-
-  function getContractDeploymentLogs() {
-    let currentContractDeploymentLogs: any;
-    if (fs.existsSync(contractDeploymentLogFilePath)) {
-      currentContractDeploymentLogs = JSON.parse(
-        fs.readFileSync(contractDeploymentLogFilePath, "utf-8")
-      );
-      return currentContractDeploymentLogs;
-    } else {
-      console.log(
-        CONTRACT_DEPLOYMENT_LOGS,
-        "doesn't exist, will create a new one soon"
       );
       return;
     }
