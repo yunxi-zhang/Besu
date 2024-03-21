@@ -1,6 +1,6 @@
 import express from "express";
-import { tokenRoute } from "./tokenRoute";
+import { fungileTokenRoute } from "./fungibleTokenRoute";
 
 export const routes = express.Router();
 
-routes.use(tokenRoute);
+routes.use(fungileTokenRoute);

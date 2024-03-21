@@ -712,7 +712,7 @@ const _ = {
   getBalance,
   transfer,
   mint,
-  burn
+  burn,
 };
 
 export default _;

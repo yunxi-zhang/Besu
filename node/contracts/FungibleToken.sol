@@ -19,13 +19,7 @@ contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
 
     function balanceOf(
         address account
-    )
-        public
-        view
-        virtual
-        override
-        returns (uint256)
-    {
+    ) public view virtual override returns (uint256) {
         return super.balanceOf(account);
     }
 
@@ -33,11 +27,17 @@ contract FungibleToken is ERC20Upgradeable, AccessControlUpgradeable {
         return 2;
     }
 
-    function mint(address account, uint256 value) public onlyRole(DEFAULT_ADMIN_ROLE){
+    function mint(
+        address account,
+        uint256 value
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         super._mint(account, value);
     }
 
-    function burn(address account, uint256 value) public onlyRole(DEFAULT_ADMIN_ROLE){
+    function burn(
+        address account,
+        uint256 value
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         super._burn(account, value);
     }
 }
